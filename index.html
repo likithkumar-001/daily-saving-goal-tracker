@@ -1,0 +1,2790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SavePulse - Savings Goal Tracker</title>
+  <style>
+/* ==========================================================================
+   SAVEPULSE - STYLESHEET
+   Clean, modern, mobile-friendly savings tracker with Dark/Light theme support
+   ========================================================================== */
+
+:root {
+  /* Color Palette - Light Mode */
+  --bg-primary: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #ffffff;
+  --bg-muted: #f1f5f9;
+  --bg-subtle: #e2e8f0;
+  
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --text-inverse: #ffffff;
+
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-light: #eef2ff;
+  --primary-border: #c7d2fe;
+
+  --success: #10b981;
+  --success-hover: #059669;
+  --success-light: #ecfdf5;
+  --success-border: #a7f3d0;
+
+  --warning: #f59e0b;
+  --warning-hover: #d97706;
+  --warning-light: #fffbeb;
+  --warning-border: #fde68a;
+
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
+  --danger-light: #fef2f2;
+  --danger-border: #fecaca;
+
+  --purple: #8b5cf6;
+  --purple-light: #f5f3ff;
+
+  --border-color: #e2e8f0;
+  --border-color-focus: #4f46e5;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+}
+
+body.dark-theme {
+  --bg-primary: #0f172a;
+  --bg-surface: #1e293b;
+  --bg-surface-elevated: #334155;
+  --bg-muted: #1e293b;
+  --bg-subtle: #334155;
+  
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
+  --text-inverse: #0f172a;
+
+  --primary: #6366f1;
+  --primary-hover: #818cf8;
+  --primary-light: rgba(99, 102, 241, 0.15);
+  --primary-border: #4338ca;
+
+  --success: #10b981;
+  --success-hover: #34d399;
+  --success-light: rgba(16, 185, 129, 0.15);
+  --success-border: rgba(16, 185, 129, 0.3);
+
+  --warning: #f59e0b;
+  --warning-hover: #fbbf24;
+  --warning-light: rgba(245, 158, 11, 0.15);
+  --warning-border: rgba(245, 158, 11, 0.3);
+
+  --danger: #ef4444;
+  --danger-hover: #f87171;
+  --danger-light: rgba(239, 68, 68, 0.15);
+  --danger-border: rgba(239, 68, 68, 0.3);
+
+  --purple: #a78bfa;
+  --purple-light: rgba(167, 139, 250, 0.15);
+
+  --border-color: #334155;
+  --border-color-focus: #818cf8;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+/* Base Reset & Typography */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.app-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 20px 48px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================================================
+   Header Styles
+   ========================================================================== */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0 24px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 24px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  background: linear-gradient(135deg, var(--primary), #8b5cf6);
+  color: #ffffff;
+  padding: 8px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+}
+
+.brand-text h1 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.brand-text .subtitle {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.currency-selector select {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  outline: none;
+}
+
+.currency-selector select:focus {
+  border-color: var(--border-color-focus);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.icon-btn {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.icon-btn:hover {
+  background: var(--bg-muted);
+  color: var(--text-primary);
+}
+
+/* Theme Icons Toggle */
+body.light-theme .sun-icon {
+  display: none;
+}
+body.light-theme .moon-icon {
+  display: block;
+}
+body.dark-theme .sun-icon {
+  display: block;
+}
+body.dark-theme .moon-icon {
+  display: none;
+}
+
+/* ==========================================================================
+   Buttons & Form Elements
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  line-height: 1.2;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #ffffff;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn-secondary {
+  background: var(--bg-muted);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-subtle);
+}
+
+.btn-secondary-outline {
+  background: transparent;
+  border-color: var(--border-color);
+  color: var(--text-secondary);
+}
+
+.btn-secondary-outline:hover {
+  background: var(--bg-muted);
+  color: var(--text-primary);
+}
+
+.btn-danger-outline {
+  background: transparent;
+  border-color: var(--danger-border);
+  color: var(--danger);
+}
+
+.btn-danger-outline:hover {
+  background: var(--danger-light);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: #ffffff;
+}
+
+.btn-danger:hover {
+  background: var(--danger-hover);
+}
+
+.btn-success {
+  background: var(--success);
+  color: #ffffff;
+}
+
+.btn-success:hover {
+  background: var(--success-hover);
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  border-radius: var(--radius-sm);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-secondary);
+}
+
+.input-with-symbol {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.currency-symbol-addon {
+  position: absolute;
+  left: 14px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.input-with-symbol input {
+  width: 100%;
+  padding: 12px 14px 12px 42px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.input-with-symbol input:focus {
+  border-color: var(--border-color-focus);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.input-hint {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 5px;
+}
+
+.form-error {
+  background: var(--danger-light);
+  color: var(--danger);
+  border: 1px solid var(--danger-border);
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+/* ==========================================================================
+   Cards General
+   ========================================================================== */
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-fast);
+}
+
+/* ==========================================================================
+   SETUP VIEW (Centered in page)
+   ========================================================================== */
+.setup-view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 24px 0;
+}
+
+.setup-card {
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+  text-align: center;
+  padding: 36px 32px;
+  box-shadow: var(--shadow-lg);
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Front Page Welcome Greeting */
+.front-page-greeting {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(139, 92, 246, 0.15));
+  border: 1px solid var(--primary-border);
+  padding: 8px 20px;
+  border-radius: var(--radius-full);
+  margin-bottom: 18px;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.1);
+}
+
+.front-page-greeting .greeting-emoji {
+  font-size: 1.3rem;
+  animation: waveAnim 2.2s infinite ease-in-out;
+  display: inline-block;
+  transform-origin: 70% 70%;
+}
+
+.front-page-greeting .greeting-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.front-page-greeting .user-highlight {
+  color: var(--primary);
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+.user-welcome-dash {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  padding: 4px 10px;
+  background: var(--bg-muted);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.user-welcome-dash strong {
+  color: var(--primary);
+  text-transform: uppercase;
+}
+
+@keyframes waveAnim {
+  0% { transform: rotate(0deg); }
+  10% { transform: rotate(14deg); }
+  20% { transform: rotate(-8deg); }
+  30% { transform: rotate(14deg); }
+  40% { transform: rotate(-4deg); }
+  50% { transform: rotate(10deg); }
+  60% { transform: rotate(0deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.card-badge {
+  display: inline-block;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  margin-bottom: 14px;
+}
+
+.setup-card h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.setup-card .card-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.calculation-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 22px;
+  animation: slideDown 0.3s ease;
+}
+
+.preview-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.preview-value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.preview-value.highlight {
+  color: var(--primary);
+}
+
+.preview-divider {
+  width: 1px;
+  height: 32px;
+  background: var(--border-color);
+}
+
+/* ==========================================================================
+   DASHBOARD VIEW
+   ========================================================================== */
+.dashboard-view {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeIn 0.35s ease-out;
+}
+
+.dashboard-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 10px 16px;
+}
+
+.goal-summary-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+}
+
+.summary-target-label {
+  color: var(--text-muted);
+}
+
+.summary-target-val {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.summary-dot {
+  color: var(--text-muted);
+}
+
+.summary-timeframe {
+  color: var(--text-secondary);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+/* Celebration Banner */
+.celebration-banner {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  border-radius: var(--radius-lg);
+  padding: 18px 24px;
+  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.25);
+  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.celebration-content {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.celebration-icon {
+  font-size: 2.2rem;
+}
+
+.celebration-text {
+  flex: 1;
+  min-width: 200px;
+}
+
+.celebration-text h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.celebration-text p {
+  font-size: 0.9rem;
+  opacity: 0.95;
+}
+
+.btn-celebrate {
+  background: #ffffff;
+  color: #059669;
+  font-weight: 700;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn-celebrate:hover {
+  background: #f0fdf4;
+}
+
+/* Daily Target Callout Banner */
+.daily-target-callout {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: #ffffff;
+  border-radius: var(--radius-xl);
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow: 0 10px 25px rgba(79, 70, 229, 0.25);
+  flex-wrap: wrap;
+}
+
+.target-callout-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.target-callout-info {
+  flex: 1;
+  min-width: 220px;
+}
+
+.callout-subtitle {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.callout-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-top: 2px;
+}
+
+.calendar-days-badge {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--radius-lg);
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.calendar-days-badge svg {
+  color: #ffffff;
+}
+
+.badge-text-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.badge-num {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.badge-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.metric-card {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.metric-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.metric-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.metric-icon.green {
+  background: var(--success-light);
+  color: var(--success);
+}
+
+.metric-icon.orange {
+  background: var(--warning-light);
+  color: var(--warning);
+}
+
+.metric-icon.blue {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.metric-icon.purple {
+  background: var(--purple-light);
+  color: var(--purple);
+}
+
+.metric-val {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.metric-sub {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* Consistency Row inside Card */
+.consistency-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.consist-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.consist-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.consist-val {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.consist-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border-color);
+}
+
+/* Progress Bar Section */
+.progress-card {
+  padding: 20px 24px;
+}
+
+.progress-bar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.progress-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.progress-details {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.progress-track {
+  width: 100%;
+  height: 14px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4f46e5, #06b6d4, #10b981);
+  border-radius: var(--radius-full);
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 10px rgba(79, 70, 229, 0.4);
+}
+
+.progress-milestones {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+/* ==========================================================================
+   Charts Section
+   ========================================================================== */
+.charts-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 640px) {
+  .charts-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-card {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-header {
+  margin-bottom: 16px;
+}
+
+.chart-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.chart-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.legend-chip {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  vertical-align: middle;
+}
+
+.legend-chip.green { background: #10b981; }
+.legend-chip.orange { background: #f59e0b; }
+.legend-chip.red { background: #ef4444; }
+
+.chart-canvas-wrapper {
+  position: relative;
+  width: 100%;
+  height: 260px;
+}
+
+/* ==========================================================================
+   Ledger & Daily Check-in Grid
+   ========================================================================== */
+.ledger-card {
+  padding: 24px;
+}
+
+.ledger-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.ledger-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.ledger-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.filter-tabs {
+  display: flex;
+  background: var(--bg-muted);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  gap: 4px;
+}
+
+.filter-tab {
+  background: transparent;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.filter-tab.active {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Quick Checkin Banner */
+.quick-checkin-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--primary-light);
+  border: 1px solid var(--primary-border);
+  border-radius: var(--radius-md);
+  padding: 12px 18px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.quick-checkin-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.next-day-pill {
+  background: var(--primary);
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+}
+
+.next-day-desc {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.quick-checkin-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Days Grid */
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 480px) {
+  .days-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.day-card {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.day-card:hover {
+  border-color: var(--primary-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.day-card.status-met {
+  border-left: 4px solid var(--success);
+  background: linear-gradient(90deg, var(--success-light) 0%, var(--bg-surface) 35%);
+}
+
+.day-card.status-partial {
+  border-left: 4px solid var(--warning);
+  background: linear-gradient(90deg, var(--warning-light) 0%, var(--bg-surface) 35%);
+}
+
+.day-card.status-missed {
+  border-left: 4px solid var(--danger);
+  background: linear-gradient(90deg, var(--danger-light) 0%, var(--bg-surface) 35%);
+}
+
+.day-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.day-badge-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.day-number {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.day-status-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+}
+
+.day-status-pill.status-pending {
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+}
+
+.day-status-pill.status-met {
+  background: var(--success-light);
+  color: var(--success);
+  border: 1px solid var(--success-border);
+}
+
+.day-status-pill.status-partial {
+  background: var(--warning-light);
+  color: var(--warning);
+  border: 1px solid var(--warning-border);
+}
+
+.day-status-pill.status-missed {
+  background: var(--danger-light);
+  color: var(--danger);
+  border: 1px solid var(--danger-border);
+}
+
+.day-amount-saved {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.day-delta {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.day-delta.surplus {
+  color: var(--success);
+}
+
+.day-delta.deficit {
+  color: var(--danger);
+}
+
+.day-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.day-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  background: var(--bg-muted);
+  color: var(--text-secondary);
+}
+
+.day-btn:hover {
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+}
+
+.day-btn.btn-ok {
+  background: var(--success-light);
+  color: var(--success);
+  border-color: var(--success-border);
+}
+
+.day-btn.btn-ok:hover {
+  background: var(--success);
+  color: #ffffff;
+}
+
+.day-btn.btn-miss {
+  background: var(--danger-light);
+  color: var(--danger);
+  border-color: var(--danger-border);
+}
+
+.day-btn.btn-miss:hover {
+  background: var(--danger);
+  color: #ffffff;
+}
+
+.day-btn.btn-custom {
+  background: var(--bg-muted);
+  border-color: var(--border-color);
+  color: var(--text-secondary);
+}
+
+.day-btn.btn-custom:hover {
+  border-color: var(--border-color-focus);
+  color: var(--primary);
+}
+
+.day-btn.btn-undo {
+  background: transparent;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+.day-btn.btn-undo:hover {
+  color: var(--text-primary);
+  background: var(--bg-muted);
+}
+
+/* Ledger Footer & Pagination */
+.ledger-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-color);
+}
+
+.ledger-page-info {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.ledger-pagination-btns {
+  display: flex;
+  gap: 8px;
+}
+
+/* ==========================================================================
+   Modals
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-dialog {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: var(--shadow-xl);
+  text-align: center;
+  animation: popIn 0.25s ease-out;
+}
+
+.modal-icon-badge {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+
+.modal-icon-badge.danger {
+  background: var(--danger-light);
+  color: var(--danger);
+}
+
+.modal-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.modal-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-bottom: 22px;
+  line-height: 1.4;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.modal-actions .btn {
+  flex: 1;
+}
+
+.quick-amount-presets {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin: 12px 0 16px;
+}
+
+.preset-btn {
+  background: var(--bg-muted);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.preset-btn:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary-border);
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.app-footer {
+  margin-top: auto;
+  padding-top: 36px;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Keyframe Animations
+   ========================================================================== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+  </style>
+  <!-- Chart.js for graphs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Canvas Confetti for celebration -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+</head>
+<body class="light-theme">
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <circle cx="12" cy="12" r="6"></circle>
+            <circle cx="12" cy="12" r="2"></circle>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>SavePulse</h1>
+          <span class="subtitle">Daily Savings Goal Tracker</span>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <!-- Currency Selector -->
+        <div class="currency-selector" title="Select Currency">
+          <label for="currencySelect" class="sr-only">Currency</label>
+          <select id="currencySelect" aria-label="Select Currency">
+            <option value="₹">₹ INR</option>
+            <option value="$">$ USD</option>
+            <option value="€">€ EUR</option>
+            <option value="£">£ GBP</option>
+            <option value="¥">¥ JPY</option>
+            <option value="C$">C$ CAD</option>
+            <option value="A$">A$ AUD</option>
+            <option value="₩">₩ KRW</option>
+          </select>
+        </div>
+
+        <!-- Dark/Light Mode Toggle -->
+        <button id="themeToggleBtn" class="icon-btn" aria-label="Toggle dark/light theme" title="Toggle Theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- CORE SETUP VIEW: Centered Goal Card -->
+    <main id="setupView" class="view-container setup-view">
+      <div class="card setup-card">
+        <!-- Personalized Greeting for LIKITH -->
+        <div class="front-page-greeting">
+          <span class="greeting-emoji">👋</span>
+          <span class="greeting-title">Welcome, <span class="user-highlight">LIKITH</span></span>
+        </div>
+        
+        <div class="card-badge">Step 1</div>
+        <h2>Set your savings goal</h2>
+        <p class="card-desc">Define your target amount and timeframe to calculate your smart daily savings target.</p>
+        
+        <form id="goalSetupForm" novalidate>
+          <div class="form-group">
+            <label for="goalAmountInput">Savings Goal Amount</label>
+            <div class="input-with-symbol">
+              <span class="currency-symbol-addon" id="setupCurrencySymbol">₹</span>
+              <input 
+                type="number" 
+                id="goalAmountInput" 
+                placeholder="e.g. 50000" 
+                min="1" 
+                step="any"
+                required
+                autocomplete="off"
+              >
+            </div>
+            <span class="input-hint" id="goalAmountHint">Enter the total target amount you wish to save</span>
+          </div>
+
+          <div class="form-group">
+            <label for="goalMonthsInput">Number of months to achieve it</label>
+            <div class="input-with-symbol">
+              <span class="currency-symbol-addon">📅</span>
+              <input 
+                type="number" 
+                id="goalMonthsInput" 
+                placeholder="e.g. 3" 
+                min="1" 
+                max="120"
+                step="1"
+                required
+                autocomplete="off"
+              >
+            </div>
+            <span class="input-hint" id="goalMonthsHint">1 month = 30 days</span>
+          </div>
+
+          <!-- Live Preview Box -->
+          <div class="calculation-preview" id="setupPreview" style="display: none;">
+            <div class="preview-item">
+              <span class="preview-label">Total Days</span>
+              <span class="preview-value" id="previewTotalDays">90 days</span>
+            </div>
+            <div class="preview-divider"></div>
+            <div class="preview-item">
+              <span class="preview-label">Daily Target</span>
+              <span class="preview-value highlight" id="previewDailyTarget">₹555.56 / day</span>
+            </div>
+          </div>
+
+          <div class="form-error" id="setupFormError" role="alert" style="display: none;"></div>
+
+          <button type="submit" id="startTrackingBtn" class="btn btn-primary btn-block">
+            <span>Start Tracking</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </form>
+      </div>
+    </main>
+
+    <!-- DASHBOARD VIEW: Shown when a goal is active -->
+    <main id="dashboardView" class="view-container dashboard-view" style="display: none;">
+      
+      <!-- Top Action Bar -->
+      <div class="dashboard-action-bar">
+        <div class="user-welcome-dash">
+          <span class="wave-icon">👋</span>
+          <span>Welcome, <strong>LIKITH</strong></span>
+        </div>
+        <div class="goal-summary-badge">
+          <span class="summary-target-label">Goal Target:</span>
+          <span class="summary-target-val" id="summaryGoalVal">₹50,000</span>
+          <span class="summary-dot">•</span>
+          <span class="summary-timeframe" id="summaryTimeframe">3 months (90 days)</span>
+        </div>
+        <div class="action-buttons">
+          <button id="editGoalBtn" class="btn btn-secondary btn-sm" title="Edit goal parameters">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+            <span>Edit</span>
+          </button>
+          <button id="resetGoalBtn" class="btn btn-danger-outline btn-sm" title="Reset your goal and all data">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+              <path d="M3 3v5h5"></path>
+            </svg>
+            <span>Reset Goal</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Celebration Banner (Shown when goal reached) -->
+      <div id="celebrationBanner" class="celebration-banner" style="display: none;">
+        <div class="celebration-content">
+          <div class="celebration-icon">🎉</div>
+          <div class="celebration-text">
+            <h3>Goal Achieved!</h3>
+            <p>Congratulations, LIKITH! You have reached your entire savings goal! Fantastic discipline!</p>
+          </div>
+          <button id="celebrateAgainBtn" class="btn btn-celebrate btn-sm">Celebrate Again 🎊</button>
+        </div>
+      </div>
+
+      <!-- Prominent Daily Target Banner -->
+      <div class="daily-target-callout">
+        <div class="target-callout-icon">🎯</div>
+        <div class="target-callout-info">
+          <span class="callout-subtitle">Target Pace</span>
+          <h2 class="callout-title" id="dailyTargetDisplay">Save ₹555.56 per day</h2>
+        </div>
+        <div class="calendar-days-badge" id="daysRemainingBadge">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <div class="badge-text-group">
+            <span class="badge-num" id="daysRemainingNum">90</span>
+            <span class="badge-label">Days remaining</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metrics Grid -->
+      <div class="metrics-grid">
+        <!-- Total Saved -->
+        <div class="card metric-card">
+          <div class="metric-header">
+            <span class="metric-title">Total Saved</span>
+            <div class="metric-icon green">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-val" id="totalSavedVal">₹0</div>
+          <div class="metric-sub" id="totalSavedSub">0 days logged</div>
+        </div>
+
+        <!-- Amount Remaining -->
+        <div class="card metric-card">
+          <div class="metric-header">
+            <span class="metric-title">Amount Remaining</span>
+            <div class="metric-icon orange">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 14 14"></polyline>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-val" id="amountRemainingVal">₹50,000</div>
+          <div class="metric-sub" id="amountRemainingSub">₹50,000 left to go</div>
+        </div>
+
+        <!-- Progress % -->
+        <div class="card metric-card">
+          <div class="metric-header">
+            <span class="metric-title">Goal Progress</span>
+            <div class="metric-icon blue">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-val" id="progressPercentVal">0%</div>
+          <div class="metric-sub" id="progressStatusSub">In progress</div>
+        </div>
+
+        <!-- Consistency Stats -->
+        <div class="card metric-card">
+          <div class="metric-header">
+            <span class="metric-title">Consistency & Streaks</span>
+            <div class="metric-icon purple">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="consistency-row">
+            <div class="consist-item">
+              <span class="consist-label">Hit Rate</span>
+              <span class="consist-val" id="consistencyRateVal">0%</span>
+            </div>
+            <div class="consist-divider"></div>
+            <div class="consist-item">
+              <span class="consist-label">Current Streak</span>
+              <span class="consist-val" id="currentStreakVal">0 🔥</span>
+            </div>
+            <div class="consist-divider"></div>
+            <div class="consist-item">
+              <span class="consist-label">Best Streak</span>
+              <span class="consist-val" id="bestStreakVal">0 🏆</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Progress Bar Section -->
+      <div class="card progress-card">
+        <div class="progress-bar-header">
+          <span class="progress-label">Savings Journey</span>
+          <span class="progress-details" id="progressBarDetails">₹0 of ₹50,000 (0.0%)</span>
+        </div>
+        <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressTrack">
+          <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+        </div>
+        <div class="progress-milestones">
+          <span>0%</span>
+          <span>25%</span>
+          <span>50%</span>
+          <span>75%</span>
+          <span>100%</span>
+        </div>
+      </div>
+
+      <!-- Graphs Section (Chart.js) -->
+      <div class="charts-section">
+        <!-- Chart 1: Cumulative Amount Saved vs Day Number (with ideal path) -->
+        <div class="card chart-card">
+          <div class="chart-header">
+            <div>
+              <h3 class="chart-title">Cumulative Growth vs. Ideal Path</h3>
+              <p class="chart-subtitle">Solid line rises with savings; dotted line shows the ideal benchmark pace.</p>
+            </div>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="cumulativeChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Daily Amount Saved Breakdown -->
+        <div class="card chart-card">
+          <div class="chart-header">
+            <div>
+              <h3 class="chart-title">Daily Savings Breakdown</h3>
+              <p class="chart-subtitle">
+                <span class="legend-chip green"></span> Target Met (≥ Target) &nbsp;
+                <span class="legend-chip orange"></span> Partial &nbsp;
+                <span class="legend-chip red"></span> Missed (0)
+              </p>
+            </div>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="dailyBarChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daily Check-in & Ledger Section -->
+      <div class="card ledger-card">
+        <div class="ledger-header">
+          <div>
+            <h3 class="ledger-title">Daily Check-in Ledger</h3>
+            <p class="ledger-subtitle">Check in daily: hit target, log custom amount, or mark missed. Days remaining recalculates instantly.</p>
+          </div>
+          <!-- Filter Controls -->
+          <div class="ledger-controls">
+            <div class="filter-tabs" role="tablist">
+              <button class="filter-tab active" data-filter="all">All</button>
+              <button class="filter-tab" data-filter="pending">Pending</button>
+              <button class="filter-tab" data-filter="completed">Logged</button>
+              <button class="filter-tab" data-filter="missed">Missed</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Log Next Day Floating / Pin Card -->
+        <div class="quick-checkin-banner" id="quickCheckinBanner">
+          <div class="quick-checkin-info">
+            <span class="next-day-pill" id="nextDayPill">Day 1</span>
+            <span class="next-day-desc">Next pending check-in</span>
+          </div>
+          <div class="quick-checkin-actions">
+            <button class="btn btn-success btn-sm" id="quickSaveTargetBtn">
+              ✔ Save Target (<span id="quickTargetAmt">₹555.56</span>)
+            </button>
+            <button class="btn btn-danger btn-sm" id="quickMissDayBtn">
+              ✖ Missed Today
+            </button>
+          </div>
+        </div>
+
+        <!-- Days List Grid -->
+        <div class="days-grid" id="daysGrid">
+          <!-- Dynamically generated day cards will appear here -->
+        </div>
+
+        <!-- Pagination / Load More Controls -->
+        <div class="ledger-footer">
+          <div class="ledger-page-info" id="ledgerPageInfo">Showing Days 1 - 30 of 90</div>
+          <div class="ledger-pagination-btns">
+            <button id="showMoreDaysBtn" class="btn btn-secondary btn-sm">Load More Days</button>
+            <button id="showAllDaysBtn" class="btn btn-secondary-outline btn-sm">Show All</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Reset Confirmation Modal -->
+    <div id="resetConfirmModal" class="modal-overlay" style="display: none;">
+      <div class="modal-dialog">
+        <div class="modal-icon-badge danger">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </div>
+        <h3 class="modal-title">Reset Savings Goal?</h3>
+        <p class="modal-desc">This will permanently delete your current goal, daily entries, and streak records. You will return to the setup screen.</p>
+        <div class="modal-actions">
+          <button id="cancelResetBtn" class="btn btn-secondary">Cancel</button>
+          <button id="confirmResetBtn" class="btn btn-danger">Yes, Reset Everything</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Goal Modal -->
+    <div id="editGoalModal" class="modal-overlay" style="display: none;">
+      <div class="modal-dialog">
+        <h3 class="modal-title">Edit Savings Goal</h3>
+        <p class="modal-desc">Adjust your total goal amount or timeframe. Logged daily entries will be preserved.</p>
+        <form id="editGoalForm" novalidate>
+          <div class="form-group">
+            <label for="editGoalAmountInput">New Goal Amount</label>
+            <div class="input-with-symbol">
+              <span class="currency-symbol-addon" id="editCurrencySymbol">₹</span>
+              <input type="number" id="editGoalAmountInput" min="1" step="any" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="editGoalMonthsInput">New Months Timeframe</label>
+            <div class="input-with-symbol">
+              <span class="currency-symbol-addon">📅</span>
+              <input type="number" id="editGoalMonthsInput" min="1" max="120" step="1" required>
+            </div>
+          </div>
+          <div class="form-error" id="editFormError" style="display: none;"></div>
+          <div class="modal-actions">
+            <button type="button" id="cancelEditBtn" class="btn btn-secondary">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Custom Amount Modal / Drawer for Day Entry -->
+    <div id="customAmountModal" class="modal-overlay" style="display: none;">
+      <div class="modal-dialog">
+        <h3 class="modal-title" id="customModalDayTitle">Enter Custom Amount</h3>
+        <p class="modal-desc" id="customModalDayDesc">Log how much you saved for this day.</p>
+        <form id="customAmountForm" novalidate>
+          <input type="hidden" id="customModalDayIndex">
+          <div class="form-group">
+            <label for="customAmountValue">Amount Saved</label>
+            <div class="input-with-symbol">
+              <span class="currency-symbol-addon" id="customModalCurrency">₹</span>
+              <input type="number" id="customAmountValue" min="0" step="any" required placeholder="0.00">
+            </div>
+            <span class="input-hint" id="customModalHint">Target: ₹555.56</span>
+          </div>
+          <div class="quick-amount-presets">
+            <button type="button" class="preset-btn" id="presetZero">0 (Missed)</button>
+            <button type="button" class="preset-btn" id="presetHalf">50% Target</button>
+            <button type="button" class="preset-btn" id="presetTarget">100% Target</button>
+            <button type="button" class="preset-btn" id="presetDouble">200% Target</button>
+          </div>
+          <div class="modal-actions">
+            <button type="button" id="cancelCustomModalBtn" class="btn btn-secondary">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Entry</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <footer class="app-footer">
+      <p>SavePulse &bull; Pure Client-Side Savings Tracker &bull; Data stored securely in your browser's localStorage</p>
+    </footer>
+  </div>
+
+  <script>
+/**
+ * SavePulse - Savings Goal Tracker
+ * Pure HTML, CSS, JavaScript (No backend, no framework)
+ * Data persisted in localStorage with Chart.js visualization
+ */
+
+// ==========================================================================
+// CONSTANTS & STATE
+// ==========================================================================
+const STORAGE_KEY = 'savepulse_tracker_state';
+const THEME_STORAGE_KEY = 'savepulse_theme_pref';
+
+let state = {
+  goalAmount: 0,
+  months: 0,
+  currency: '₹',
+  entries: {}, // e.g. { 1: 555.56, 2: 0, 3: 1111.12 }
+  activeFilter: 'all',
+  visibleDaysCount: 30,
+  startDate: new Date().toISOString()
+};
+
+// Chart instances
+let cumulativeChartInstance = null;
+let dailyBarChartInstance = null;
+
+// ==========================================================================
+// DOM ELEMENT REFERENCES
+// ==========================================================================
+const elements = {
+  // Views
+  setupView: document.getElementById('setupView'),
+  dashboardView: document.getElementById('dashboardView'),
+
+  // Header controls
+  currencySelect: document.getElementById('currencySelect'),
+  themeToggleBtn: document.getElementById('themeToggleBtn'),
+
+  // Setup Form
+  goalSetupForm: document.getElementById('goalSetupForm'),
+  goalAmountInput: document.getElementById('goalAmountInput'),
+  goalMonthsInput: document.getElementById('goalMonthsInput'),
+  setupCurrencySymbol: document.getElementById('setupCurrencySymbol'),
+  setupPreview: document.getElementById('setupPreview'),
+  previewTotalDays: document.getElementById('previewTotalDays'),
+  previewDailyTarget: document.getElementById('previewDailyTarget'),
+  setupFormError: document.getElementById('setupFormError'),
+
+  // Dashboard Overview
+  summaryGoalVal: document.getElementById('summaryGoalVal'),
+  summaryTimeframe: document.getElementById('summaryTimeframe'),
+  editGoalBtn: document.getElementById('editGoalBtn'),
+  resetGoalBtn: document.getElementById('resetGoalBtn'),
+  celebrationBanner: document.getElementById('celebrationBanner'),
+  celebrateAgainBtn: document.getElementById('celebrateAgainBtn'),
+  dailyTargetDisplay: document.getElementById('dailyTargetDisplay'),
+  daysRemainingNum: document.getElementById('daysRemainingNum'),
+
+  // Metrics
+  totalSavedVal: document.getElementById('totalSavedVal'),
+  totalSavedSub: document.getElementById('totalSavedSub'),
+  amountRemainingVal: document.getElementById('amountRemainingVal'),
+  amountRemainingSub: document.getElementById('amountRemainingSub'),
+  progressPercentVal: document.getElementById('progressPercentVal'),
+  progressStatusSub: document.getElementById('progressStatusSub'),
+  consistencyRateVal: document.getElementById('consistencyRateVal'),
+  currentStreakVal: document.getElementById('currentStreakVal'),
+  bestStreakVal: document.getElementById('bestStreakVal'),
+
+  // Progress Bar
+  progressBarDetails: document.getElementById('progressBarDetails'),
+  progressFill: document.getElementById('progressFill'),
+
+  // Ledger & Check-in
+  quickCheckinBanner: document.getElementById('quickCheckinBanner'),
+  nextDayPill: document.getElementById('nextDayPill'),
+  quickTargetAmt: document.getElementById('quickTargetAmt'),
+  quickSaveTargetBtn: document.getElementById('quickSaveTargetBtn'),
+  quickMissDayBtn: document.getElementById('quickMissDayBtn'),
+  daysGrid: document.getElementById('daysGrid'),
+  ledgerPageInfo: document.getElementById('ledgerPageInfo'),
+  showMoreDaysBtn: document.getElementById('showMoreDaysBtn'),
+  showAllDaysBtn: document.getElementById('showAllDaysBtn'),
+  filterTabs: document.querySelectorAll('.filter-tab'),
+
+  // Reset Modal
+  resetConfirmModal: document.getElementById('resetConfirmModal'),
+  cancelResetBtn: document.getElementById('cancelResetBtn'),
+  confirmResetBtn: document.getElementById('confirmResetBtn'),
+
+  // Edit Goal Modal
+  editGoalModal: document.getElementById('editGoalModal'),
+  editGoalForm: document.getElementById('editGoalForm'),
+  editGoalAmountInput: document.getElementById('editGoalAmountInput'),
+  editGoalMonthsInput: document.getElementById('editGoalMonthsInput'),
+  editCurrencySymbol: document.getElementById('editCurrencySymbol'),
+  editFormError: document.getElementById('editFormError'),
+  cancelEditBtn: document.getElementById('cancelEditBtn'),
+
+  // Custom Amount Modal
+  customAmountModal: document.getElementById('customAmountModal'),
+  customAmountForm: document.getElementById('customAmountForm'),
+  customModalDayIndex: document.getElementById('customModalDayIndex'),
+  customModalDayTitle: document.getElementById('customModalDayTitle'),
+  customModalCurrency: document.getElementById('customModalCurrency'),
+  customAmountValue: document.getElementById('customAmountValue'),
+  customModalHint: document.getElementById('customModalHint'),
+  cancelCustomModalBtn: document.getElementById('cancelCustomModalBtn'),
+  presetZero: document.getElementById('presetZero'),
+  presetHalf: document.getElementById('presetHalf'),
+  presetTarget: document.getElementById('presetTarget'),
+  presetDouble: document.getElementById('presetDouble')
+};
+
+// ==========================================================================
+// FORMATTING HELPERS
+// ==========================================================================
+function formatCurrency(amount, includeSymbol = true) {
+  const num = Number(amount) || 0;
+  // Format with commas and up to 2 decimals
+  const formatted = num.toLocaleString('en-IN', {
+    minimumFractionDigits: Number.isInteger(num) ? 0 : 2,
+    maximumFractionDigits: 2
+  });
+  return includeSymbol ? `${state.currency}${formatted}` : formatted;
+}
+
+function parsePositiveFloat(val) {
+  const num = parseFloat(val);
+  return isNaN(num) || num < 0 ? null : num;
+}
+
+// ==========================================================================
+// CORE CALCULATIONS
+// ==========================================================================
+/**
+ * Calculates current status and metrics based on state.
+ */
+function calculateMetrics() {
+  const totalDays = state.months * 30;
+  const dailyTarget = totalDays > 0 ? state.goalAmount / totalDays : 0;
+
+  // Sum of all saved entries
+  const entryEntries = Object.entries(state.entries);
+  const totalSaved = entryEntries.reduce((sum, [, amt]) => sum + Number(amt || 0), 0);
+  
+  // Remaining amount to reach goal
+  const amountRemaining = Math.max(0, state.goalAmount - totalSaved);
+
+  // Days remaining = ceil(amount remaining / daily target)
+  // Round ratio to 4 decimal places before ceil to avoid floating-point inaccuracies
+  // (e.g. 88.000002 should ceil to 88, not 89)
+  const daysRemaining = amountRemaining > 0.005 && dailyTarget > 0 
+    ? Math.ceil(Math.round((amountRemaining / dailyTarget) * 10000) / 10000) 
+    : 0;
+
+  // Target met threshold with 2-decimal tolerance
+  const targetThreshold = Math.round(dailyTarget * 100) / 100 - 0.005;
+
+  // Progress percentage (capped at 100% for progress bar, but can track full %)
+  const progressRatio = state.goalAmount > 0 ? (totalSaved / state.goalAmount) : 0;
+  const progressPercent = Math.min(100, Math.max(0, progressRatio * 100));
+  const rawProgressPercent = progressRatio * 100;
+
+  // Consistency & Streaks
+  // Sorted day numbers that have been logged
+  const loggedDayNums = Object.keys(state.entries).map(Number).sort((a, b) => a - b);
+  const totalLoggedDays = loggedDayNums.length;
+
+  let daysMet = 0;
+  loggedDayNums.forEach(day => {
+    if (state.entries[day] >= targetThreshold) {
+      daysMet++;
+    }
+  });
+
+  const consistencyRate = totalLoggedDays > 0 
+    ? Math.round((daysMet / totalLoggedDays) * 100) 
+    : 0;
+
+  // Streaks calculation:
+  // Best streak: longest consecutive sequence of days with >= dailyTarget
+  let bestStreak = 0;
+  let runningStreak = 0;
+  for (let i = 0; i < loggedDayNums.length; i++) {
+    const day = loggedDayNums[i];
+    if (state.entries[day] >= targetThreshold) {
+      runningStreak++;
+      if (runningStreak > bestStreak) {
+        bestStreak = runningStreak;
+      }
+    } else {
+      runningStreak = 0;
+    }
+  }
+
+  // Current streak: consecutive days ending at the most recent logged day
+  let currentStreak = 0;
+  for (let i = loggedDayNums.length - 1; i >= 0; i--) {
+    const day = loggedDayNums[i];
+    if (state.entries[day] >= targetThreshold) {
+      currentStreak++;
+    } else {
+      break;
+    }
+  }
+
+  // Next pending day (smallest day number not yet logged)
+  let nextPendingDay = 1;
+  while (state.entries[nextPendingDay] !== undefined) {
+    nextPendingDay++;
+  }
+
+  const highestLoggedDay = loggedDayNums.length > 0 ? Math.max(...loggedDayNums) : 0;
+
+  return {
+    totalDays,
+    dailyTarget,
+    totalSaved,
+    amountRemaining,
+    daysRemaining,
+    progressPercent,
+    rawProgressPercent,
+    totalLoggedDays,
+    daysMet,
+    consistencyRate,
+    currentStreak,
+    bestStreak,
+    nextPendingDay,
+    highestLoggedDay
+  };
+}
+
+// ==========================================================================
+// PERSISTENCE (localStorage)
+// ==========================================================================
+function saveStateToStorage() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) {
+    console.error('Failed to save state to localStorage:', e);
+  }
+}
+
+function loadStateFromStorage() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      state = { ...state, ...parsed };
+    }
+  } catch (e) {
+    console.error('Failed to parse saved state:', e);
+  }
+}
+
+// ==========================================================================
+// UI RENDERING
+// ==========================================================================
+function renderApp() {
+  if (!state.goalAmount || !state.months) {
+    // Show setup view
+    elements.setupView.style.display = 'flex';
+    elements.dashboardView.style.display = 'none';
+    elements.setupCurrencySymbol.textContent = state.currency;
+    updateSetupPreview();
+    return;
+  }
+
+  // Show dashboard view
+  elements.setupView.style.display = 'none';
+  elements.dashboardView.style.display = 'flex';
+
+  const metrics = calculateMetrics();
+
+  // 1. Dashboard Action Bar Summary
+  elements.summaryGoalVal.textContent = formatCurrency(state.goalAmount);
+  elements.summaryTimeframe.textContent = `${state.months} month${state.months > 1 ? 's' : ''} (${metrics.totalDays} days)`;
+
+  // 2. Prominent Daily Target Banner
+  elements.dailyTargetDisplay.textContent = `Save ${formatCurrency(metrics.dailyTarget)} per day`;
+  elements.daysRemainingNum.textContent = metrics.daysRemaining;
+
+  // 3. Metrics Cards
+  elements.totalSavedVal.textContent = formatCurrency(metrics.totalSaved);
+  elements.totalSavedSub.textContent = `${metrics.totalLoggedDays} of ${metrics.totalDays} days logged`;
+
+  elements.amountRemainingVal.textContent = formatCurrency(metrics.amountRemaining);
+  elements.amountRemainingSub.textContent = `${formatCurrency(metrics.amountRemaining)} left to go`;
+
+  elements.progressPercentVal.textContent = `${metrics.rawProgressPercent.toFixed(1)}%`;
+  elements.progressStatusSub.textContent = metrics.amountRemaining === 0 ? 'Goal Achieved!' : 'In progress';
+
+  // 4. Consistency & Streaks
+  elements.consistencyRateVal.textContent = `${metrics.consistencyRate}%`;
+  elements.currentStreakVal.textContent = `${metrics.currentStreak} 🔥`;
+  elements.bestStreakVal.textContent = `${metrics.bestStreak} 🏆`;
+
+  // 5. Progress Bar
+  elements.progressBarDetails.textContent = `${formatCurrency(metrics.totalSaved)} of ${formatCurrency(state.goalAmount)} (${metrics.rawProgressPercent.toFixed(1)}%)`;
+  elements.progressFill.style.width = `${metrics.progressPercent}%`;
+
+  // 6. Celebration banner
+  if (metrics.amountRemaining <= 0 && metrics.totalSaved > 0) {
+    elements.celebrationBanner.style.display = 'block';
+    if (!state.celebrationTriggered) {
+      triggerConfetti();
+      state.celebrationTriggered = true;
+      saveStateToStorage();
+    }
+  } else {
+    elements.celebrationBanner.style.display = 'none';
+    state.celebrationTriggered = false;
+  }
+
+  // 7. Quick Check-in Banner
+  elements.nextDayPill.textContent = `Day ${metrics.nextPendingDay}`;
+  elements.quickTargetAmt.textContent = formatCurrency(metrics.dailyTarget);
+
+  // 8. Render Ledger
+  renderDaysGrid(metrics);
+
+  // 9. Render Charts
+  renderCharts(metrics);
+}
+
+// ==========================================================================
+// DAYS LEDGER RENDERING
+// ==========================================================================
+function renderDaysGrid(metrics) {
+  const container = elements.daysGrid;
+  container.innerHTML = '';
+
+  // Max day number to consider in total list
+  const maxDayBound = Math.max(metrics.totalDays, metrics.highestLoggedDay + 10);
+  const displayLimit = Math.min(state.visibleDaysCount, maxDayBound);
+  const targetThreshold = Math.round(metrics.dailyTarget * 100) / 100 - 0.005;
+
+  // Prepare list of days to display based on active filter
+  let renderedCount = 0;
+  for (let day = 1; day <= maxDayBound && renderedCount < displayLimit; day++) {
+    const isLogged = state.entries[day] !== undefined;
+    const amount = isLogged ? Number(state.entries[day]) : null;
+
+    // Filter logic
+    if (state.activeFilter === 'pending' && isLogged) continue;
+    if (state.activeFilter === 'completed' && (!isLogged || amount < targetThreshold)) continue;
+    if (state.activeFilter === 'missed' && (!isLogged || amount !== 0)) continue;
+
+    renderedCount++;
+
+    const card = document.createElement('div');
+    card.className = 'day-card';
+    card.id = `day-card-${day}`;
+
+    // Determine status & badges
+    let statusClass = '';
+    let statusPillClass = 'status-pending';
+    let statusPillText = 'Pending';
+    let deltaHtml = '';
+
+    if (isLogged) {
+      if (amount >= targetThreshold) {
+        statusClass = 'status-met';
+        statusPillClass = 'status-met';
+        statusPillText = 'Target Met';
+        const surplus = amount - metrics.dailyTarget;
+        if (surplus > 0.01) {
+          deltaHtml = `<span class="day-delta surplus">(+${formatCurrency(surplus)})</span>`;
+        }
+      } else if (amount > 0) {
+        statusClass = 'status-partial';
+        statusPillClass = 'status-partial';
+        statusPillText = 'Partial';
+        const deficit = metrics.dailyTarget - amount;
+        deltaHtml = `<span class="day-delta deficit">(-${formatCurrency(deficit)})</span>`;
+      } else {
+        statusClass = 'status-missed';
+        statusPillClass = 'status-missed';
+        statusPillText = 'Missed';
+        deltaHtml = `<span class="day-delta deficit">(Saved ₹0)</span>`;
+      }
+    }
+
+    if (statusClass) card.classList.add(statusClass);
+
+    card.innerHTML = `
+      <div class="day-card-header">
+        <div class="day-badge-title">
+          <span class="day-number">Day ${day}</span>
+          <span class="day-status-pill ${statusPillClass}">${statusPillText}</span>
+        </div>
+        <div class="day-amount-saved">
+          ${isLogged ? formatCurrency(amount) : '<span style="color:var(--text-muted);font-size:0.85rem;">Pending</span>'}
+          ${deltaHtml}
+        </div>
+      </div>
+      <div class="day-actions">
+        <button class="day-btn btn-ok" data-action="ok" data-day="${day}" title="Save today's target (${formatCurrency(metrics.dailyTarget)})">
+          ✔ OK
+        </button>
+        <button class="day-btn btn-miss" data-action="miss" data-day="${day}" title="Mark day as missed (₹0)">
+          ✖ Missed
+        </button>
+        <button class="day-btn btn-custom" data-action="custom" data-day="${day}" title="Enter custom amount">
+          ✏ Custom
+        </button>
+        ${isLogged ? `
+          <button class="day-btn btn-undo" data-action="undo" data-day="${day}" title="Undo entry / reset to pending">
+            ↺ Undo
+          </button>
+        ` : ''}
+      </div>
+    `;
+
+    container.appendChild(card);
+  }
+
+  // Update ledger pagination info
+  elements.ledgerPageInfo.textContent = `Showing ${renderedCount} days (Total timeframe: ${metrics.totalDays} days)`;
+
+  if (state.visibleDaysCount >= maxDayBound) {
+    elements.showMoreDaysBtn.style.display = 'none';
+    elements.showAllDaysBtn.style.display = 'none';
+  } else {
+    elements.showMoreDaysBtn.style.display = 'inline-flex';
+    elements.showAllDaysBtn.style.display = 'inline-flex';
+  }
+}
+
+// ==========================================================================
+// ACTIONS: RECORDING DAYS
+// ==========================================================================
+function logDayEntry(dayNumber, amount) {
+  const day = parseInt(dayNumber, 10);
+  if (isNaN(day) || day < 1) return;
+
+  const validAmount = Math.max(0, parseFloat(amount) || 0);
+  // Store rounded to 2 decimal places
+  state.entries[day] = Math.round(validAmount * 100) / 100;
+
+  saveStateToStorage();
+  renderApp();
+}
+
+function undoDayEntry(dayNumber) {
+  const day = parseInt(dayNumber, 10);
+  if (state.entries[day] !== undefined) {
+    delete state.entries[day];
+    saveStateToStorage();
+    renderApp();
+  }
+}
+
+// ==========================================================================
+// CHARTS (Chart.js)
+// ==========================================================================
+function getChartThemeColors() {
+  const isDark = document.body.classList.contains('dark-theme');
+  return {
+    textColor: isDark ? '#cbd5e1' : '#475569',
+    gridColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)',
+    cardBg: isDark ? '#1e293b' : '#ffffff'
+  };
+}
+
+function renderCharts(metrics) {
+  const colors = getChartThemeColors();
+
+  // Determine span of days to show on charts
+  const maxDayToPlot = Math.max(metrics.highestLoggedDay, 1);
+  const labels = [];
+  const actualCumulativeData = [];
+  const idealCumulativeData = [];
+  const dailyBarData = [];
+  const dailyBarColors = [];
+
+  let runningCumulative = 0;
+
+  const targetThreshold = Math.round(metrics.dailyTarget * 100) / 100 - 0.005;
+
+  for (let i = 1; i <= maxDayToPlot; i++) {
+    labels.push(`Day ${i}`);
+    
+    // Ideal cumulative path
+    const idealVal = Math.min(state.goalAmount, Math.round(metrics.dailyTarget * i * 100) / 100);
+    idealCumulativeData.push(idealVal);
+
+    // Actual cumulative path
+    if (state.entries[i] !== undefined) {
+      runningCumulative += Number(state.entries[i]);
+      actualCumulativeData.push(Math.round(runningCumulative * 100) / 100);
+
+      // Daily bar
+      const dayAmt = Number(state.entries[i]);
+      dailyBarData.push(dayAmt);
+      if (dayAmt >= targetThreshold) {
+        dailyBarColors.push('#10b981'); // Green: Target Met/Exceeded
+      } else if (dayAmt > 0) {
+        dailyBarColors.push('#f59e0b'); // Orange: Partial
+      } else {
+        dailyBarColors.push('#ef4444'); // Red: Missed
+      }
+    } else {
+      // Pending day: carry forward current cumulative for line, 0 for bar
+      actualCumulativeData.push(Math.round(runningCumulative * 100) / 100);
+      dailyBarData.push(0);
+      dailyBarColors.push('rgba(148, 163, 184, 0.3)'); // Muted gray
+    }
+  }
+
+  // ----------------------------------------------------
+  // 1. Line Chart: Cumulative Growth vs Ideal Path
+  // ----------------------------------------------------
+  const cumulativeCtx = document.getElementById('cumulativeChart');
+  if (cumulativeCtx) {
+    if (cumulativeChartInstance) {
+      cumulativeChartInstance.destroy();
+    }
+
+    cumulativeChartInstance = new Chart(cumulativeCtx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Actual Saved',
+            data: actualCumulativeData,
+            borderColor: '#4f46e5',
+            backgroundColor: 'rgba(79, 70, 229, 0.12)',
+            fill: true,
+            tension: 0.25,
+            borderWidth: 2.5,
+            pointBackgroundColor: '#4f46e5',
+            pointRadius: labels.length > 30 ? 2 : 4,
+            pointHoverRadius: 6
+          },
+          {
+            label: 'Ideal Path',
+            data: idealCumulativeData,
+            borderColor: '#94a3b8',
+            borderDash: [5, 5],
+            borderWidth: 2,
+            pointRadius: 0,
+            fill: false,
+            tension: 0
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              color: colors.textColor,
+              font: { weight: '600', size: 12 },
+              usePointStyle: true
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return `${context.dataset.label}: ${formatCurrency(context.parsed.y)}`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: colors.textColor, maxTicksLimit: 12 },
+            grid: { color: colors.gridColor }
+          },
+          y: {
+            ticks: {
+              color: colors.textColor,
+              callback: function(value) {
+                return formatCurrency(value);
+              }
+            },
+            grid: { color: colors.gridColor }
+          }
+        }
+      }
+    });
+  }
+
+  // ----------------------------------------------------
+  // 2. Bar Chart: Daily Breakdown
+  // ----------------------------------------------------
+  const dailyBarCtx = document.getElementById('dailyBarChart');
+  if (dailyBarCtx) {
+    if (dailyBarChartInstance) {
+      dailyBarChartInstance.destroy();
+    }
+
+    dailyBarChartInstance = new Chart(dailyBarCtx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Saved Today',
+            data: dailyBarData,
+            backgroundColor: dailyBarColors,
+            borderRadius: 4,
+            borderSkipped: false
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const dayIndex = context.dataIndex + 1;
+                const amt = context.parsed.y;
+                let status = 'Pending';
+                if (state.entries[dayIndex] !== undefined) {
+                  if (amt >= metrics.dailyTarget) status = 'Target Met';
+                  else if (amt > 0) status = 'Partial';
+                  else status = 'Missed';
+                }
+                return `Saved: ${formatCurrency(amt)} (${status})`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: colors.textColor, maxTicksLimit: 12 },
+            grid: { display: false }
+          },
+          y: {
+            ticks: {
+              color: colors.textColor,
+              callback: function(value) {
+                return formatCurrency(value);
+              }
+            },
+            grid: { color: colors.gridColor }
+          }
+        }
+      }
+    });
+  }
+}
+
+// ==========================================================================
+// CELEBRATION CONFETTI
+// ==========================================================================
+function triggerConfetti() {
+  if (typeof confetti === 'function') {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
+    setTimeout(() => {
+      confetti({
+        particleCount: 50,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 }
+      });
+      confetti({
+        particleCount: 50,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 }
+      });
+    }, 250);
+  }
+}
+
+// ==========================================================================
+// SETUP FORM & PREVIEW
+// ==========================================================================
+function updateSetupPreview() {
+  const goal = parsePositiveFloat(elements.goalAmountInput.value);
+  const months = parseInt(elements.goalMonthsInput.value, 10);
+
+  if (goal && months && months > 0) {
+    const totalDays = months * 30;
+    const daily = goal / totalDays;
+    elements.previewTotalDays.textContent = `${totalDays} days`;
+    elements.previewDailyTarget.textContent = `${formatCurrency(daily)} / day`;
+    elements.setupPreview.style.display = 'flex';
+  } else {
+    elements.setupPreview.style.display = 'none';
+  }
+}
+
+// ==========================================================================
+// EVENT HANDLERS & LISTENERS
+// ==========================================================================
+function setupEventListeners() {
+  // 1. Live preview on setup form
+  elements.goalAmountInput.addEventListener('input', updateSetupPreview);
+  elements.goalMonthsInput.addEventListener('input', updateSetupPreview);
+
+  // 2. Setup form submission
+  elements.goalSetupForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    elements.setupFormError.style.display = 'none';
+
+    const goal = parsePositiveFloat(elements.goalAmountInput.value);
+    const months = parseInt(elements.goalMonthsInput.value, 10);
+
+    if (!goal || goal <= 0) {
+      elements.setupFormError.textContent = 'Please enter a valid positive savings goal amount.';
+      elements.setupFormError.style.display = 'block';
+      return;
+    }
+
+    if (!months || months <= 0) {
+      elements.setupFormError.textContent = 'Please enter at least 1 month.';
+      elements.setupFormError.style.display = 'block';
+      return;
+    }
+
+    state.goalAmount = goal;
+    state.months = months;
+    state.entries = {};
+    state.visibleDaysCount = 30;
+    state.celebrationTriggered = false;
+
+    saveStateToStorage();
+    renderApp();
+  });
+
+  // 3. Currency Selector
+  elements.currencySelect.value = state.currency || '₹';
+  elements.currencySelect.addEventListener('change', (e) => {
+    state.currency = e.target.value;
+    elements.setupCurrencySymbol.textContent = state.currency;
+    elements.editCurrencySymbol.textContent = state.currency;
+    elements.customModalCurrency.textContent = state.currency;
+    saveStateToStorage();
+    renderApp();
+  });
+
+  // 4. Dark/Light Theme Toggle
+  const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || 'light';
+  applyTheme(savedTheme);
+
+  elements.themeToggleBtn.addEventListener('click', () => {
+    const isDark = document.body.classList.contains('dark-theme');
+    const newTheme = isDark ? 'light' : 'dark';
+    applyTheme(newTheme);
+    localStorage.setItem(THEME_STORAGE_KEY, newTheme);
+    if (state.goalAmount > 0) {
+      const metrics = calculateMetrics();
+      renderCharts(metrics);
+    }
+  });
+
+  // 5. Reset Goal Modal
+  elements.resetGoalBtn.addEventListener('click', () => {
+    elements.resetConfirmModal.style.display = 'flex';
+  });
+
+  elements.cancelResetBtn.addEventListener('click', () => {
+    elements.resetConfirmModal.style.display = 'none';
+  });
+
+  elements.confirmResetBtn.addEventListener('click', () => {
+    state.goalAmount = 0;
+    state.months = 0;
+    state.entries = {};
+    state.celebrationTriggered = false;
+    elements.goalAmountInput.value = '';
+    elements.goalMonthsInput.value = '';
+    elements.setupPreview.style.display = 'none';
+    elements.resetConfirmModal.style.display = 'none';
+    saveStateToStorage();
+    renderApp();
+  });
+
+  // 6. Edit Goal Modal
+  elements.editGoalBtn.addEventListener('click', () => {
+    elements.editGoalAmountInput.value = state.goalAmount;
+    elements.editGoalMonthsInput.value = state.months;
+    elements.editCurrencySymbol.textContent = state.currency;
+    elements.editFormError.style.display = 'none';
+    elements.editGoalModal.style.display = 'flex';
+  });
+
+  elements.cancelEditBtn.addEventListener('click', () => {
+    elements.editGoalModal.style.display = 'none';
+  });
+
+  elements.editGoalForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    elements.editFormError.style.display = 'none';
+
+    const goal = parsePositiveFloat(elements.editGoalAmountInput.value);
+    const months = parseInt(elements.editGoalMonthsInput.value, 10);
+
+    if (!goal || goal <= 0) {
+      elements.editFormError.textContent = 'Please enter a valid positive goal amount.';
+      elements.editFormError.style.display = 'block';
+      return;
+    }
+
+    if (!months || months <= 0) {
+      elements.editFormError.textContent = 'Please enter at least 1 month.';
+      elements.editFormError.style.display = 'block';
+      return;
+    }
+
+    state.goalAmount = goal;
+    state.months = months;
+    elements.editGoalModal.style.display = 'none';
+    saveStateToStorage();
+    renderApp();
+  });
+
+  // 7. Quick Check-in Banner Buttons
+  elements.quickSaveTargetBtn.addEventListener('click', () => {
+    const metrics = calculateMetrics();
+    logDayEntry(metrics.nextPendingDay, metrics.dailyTarget);
+  });
+
+  elements.quickMissDayBtn.addEventListener('click', () => {
+    const metrics = calculateMetrics();
+    logDayEntry(metrics.nextPendingDay, 0);
+  });
+
+  // 8. Days Grid Event Delegation (OK, Miss, Custom, Undo)
+  elements.daysGrid.addEventListener('click', (e) => {
+    const btn = e.target.closest('.day-btn');
+    if (!btn) return;
+
+    const action = btn.dataset.action;
+    const day = parseInt(btn.dataset.day, 10);
+    const metrics = calculateMetrics();
+
+    if (action === 'ok') {
+      logDayEntry(day, metrics.dailyTarget);
+    } else if (action === 'miss') {
+      logDayEntry(day, 0);
+    } else if (action === 'custom') {
+      openCustomModal(day, metrics);
+    } else if (action === 'undo') {
+      undoDayEntry(day);
+    }
+  });
+
+  // 9. Custom Amount Modal
+  elements.cancelCustomModalBtn.addEventListener('click', () => {
+    elements.customAmountModal.style.display = 'none';
+  });
+
+  elements.presetZero.addEventListener('click', () => {
+    elements.customAmountValue.value = 0;
+  });
+
+  elements.presetHalf.addEventListener('click', () => {
+    const metrics = calculateMetrics();
+    elements.customAmountValue.value = (metrics.dailyTarget * 0.5).toFixed(2);
+  });
+
+  elements.presetTarget.addEventListener('click', () => {
+    const metrics = calculateMetrics();
+    elements.customAmountValue.value = metrics.dailyTarget.toFixed(2);
+  });
+
+  elements.presetDouble.addEventListener('click', () => {
+    const metrics = calculateMetrics();
+    elements.customAmountValue.value = (metrics.dailyTarget * 2).toFixed(2);
+  });
+
+  elements.customAmountForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const day = parseInt(elements.customModalDayIndex.value, 10);
+    const val = parsePositiveFloat(elements.customAmountValue.value);
+
+    if (val === null) {
+      alert('Please enter a valid non-negative number.');
+      return;
+    }
+
+    elements.customAmountModal.style.display = 'none';
+    logDayEntry(day, val);
+  });
+
+  // 10. Ledger Filter Tabs
+  elements.filterTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      elements.filterTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      state.activeFilter = tab.dataset.filter;
+      const metrics = calculateMetrics();
+      renderDaysGrid(metrics);
+    });
+  });
+
+  // 11. Pagination: Load More / Show All
+  elements.showMoreDaysBtn.addEventListener('click', () => {
+    state.visibleDaysCount += 30;
+    const metrics = calculateMetrics();
+    renderDaysGrid(metrics);
+  });
+
+  elements.showAllDaysBtn.addEventListener('click', () => {
+    const metrics = calculateMetrics();
+    state.visibleDaysCount = Math.max(metrics.totalDays, metrics.highestLoggedDay + 10);
+    renderDaysGrid(metrics);
+  });
+
+  // 12. Celebrate banner click
+  elements.celebrateAgainBtn.addEventListener('click', () => {
+    triggerConfetti();
+  });
+}
+
+function openCustomModal(day, metrics) {
+  elements.customModalDayIndex.value = day;
+  elements.customModalDayTitle.textContent = `Day ${day} Entry`;
+  elements.customModalCurrency.textContent = state.currency;
+  elements.customModalHint.textContent = `Daily Target: ${formatCurrency(metrics.dailyTarget)}`;
+
+  const currentAmt = state.entries[day];
+  elements.customAmountValue.value = currentAmt !== undefined ? currentAmt : metrics.dailyTarget.toFixed(2);
+
+  elements.customAmountModal.style.display = 'flex';
+  setTimeout(() => elements.customAmountValue.focus(), 100);
+}
+
+function applyTheme(theme) {
+  if (theme === 'dark') {
+    document.body.classList.remove('light-theme');
+    document.body.classList.add('dark-theme');
+  } else {
+    document.body.classList.remove('dark-theme');
+    document.body.classList.add('light-theme');
+  }
+}
+
+// ==========================================================================
+// INITIALIZATION
+// ==========================================================================
+document.addEventListener('DOMContentLoaded', () => {
+  loadStateFromStorage();
+  setupEventListeners();
+  renderApp();
+});
+
+  </script>
+</body>
+</html>
